@@ -10,13 +10,16 @@ public static class Pathfinding {
         Debug.Log("Let the party start!");
 
         // If either the startPos or the endPos are non pathable, path won't be found
-        if (pathingData.IsWalkable[startPos.x, startPos.y] == false) return null;
-        if (pathingData.IsWalkable[endPos.x, endPos.y] == false)     return null;
-        Debug.Log("Path should be feasible");
+        if (pathingData.IsWalkable[startPos.x, startPos.y] == false || pathingData.IsWalkable[endPos.x, endPos.y] == false) {
+            Debug.Log("No path: Invalid Position");
+            return null;
+        }
+        Debug.Log("Positions are valid");
 
         //? Create a node for the start and end positions
         PathNode startNode = new PathNode(pathingData, startPos);
         PathNode endNode   = new PathNode(pathingData, endPos);
+        Debug.Log("Nodes created");
 
         //? Open & Closed sets
         List<PathNode> OpenSet = new List<PathNode> { startNode }; //? Add the start node to the open set
@@ -61,6 +64,7 @@ public static class Pathfinding {
                 }
             }
         }
+        Debug.Log("No path");
         return null; // In case a path could not be found
     }
     private static List<PathNode> TracebackPath(PathNode startNode, PathNode endNode) {
