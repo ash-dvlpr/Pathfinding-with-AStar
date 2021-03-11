@@ -7,7 +7,7 @@
  
  Ahí tengo organizado todo en carpetas y sub carpetas. Aunque la mayor parte solo son cosas necesarias para generar el mapa, etc.
  
- 
+# Controles
  Controles de Teclado:
  * WASD:      Movimiento de la cámara
  * Space:     Cambio de herramienta
