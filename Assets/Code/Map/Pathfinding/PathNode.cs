@@ -27,7 +27,7 @@ public class PathNode {
         this.isWalkable = pathingData.IsWalkable[position.x, position.y];
         this.pathCost = pathingData.PathCost[position.x, position.y];
 
-        this.cameFrom = cameFrom;
+        this.cameFrom = (cameFrom == null) ? this : cameFrom;
     }
 
     public List<PathNode> GetNeighbours(PathDataLayer pathingData) {
