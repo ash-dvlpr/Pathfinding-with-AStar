@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba3a74c3b2725f5498d73d972e356b45, type: 3}
+  m_Name: 3_Sand
+  m_EditorClassIdentifier: 
+  name_id: sand
+  name: Sand
+  sprite: {fileID: 21300000, guid: 834d4d4b3e9616d448a55d5bccdd8ed2, type: 3}
+  isWalkable: 1
+  pathCost: 3
