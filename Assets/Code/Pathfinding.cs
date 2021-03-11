@@ -9,7 +9,7 @@ public static class Pathfinding {
     public static List<PathNode> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos) {
         //? Sanity checks
         // Correct start and end positions in case they are outside bounds.
-        Debug.Log("Empieza la fiesta!");
+        Debug.Log("Let the party start!");
         startPos = Utils.DisplacePosInsideBounds(startPos, pathingData.MapSize);
         endPos = Utils.DisplacePosInsideBounds(endPos, pathingData.MapSize);
         // If either the startPos or the endPos are non pathable, path won't be found
