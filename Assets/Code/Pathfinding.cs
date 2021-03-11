@@ -28,19 +28,20 @@ public static class Pathfinding {
 
             // Find the node in the OpenSet with the lowest fCost
             for (int i = 1; i < OpenSet.Count; i++) {
-                if (OpenSet[i].fCost < currentNode.fCost || OpenSet[i].fCost == currentNode.fCost) {
-                    if (OpenSet[i].hCost < currentNode.hCost) currentNode = OpenSet[i];
+                if (OpenSet[i].fCost <= currentNode.fCost || OpenSet[i].hCost < currentNode.hCost) {
+                    currentNode = OpenSet[i];
                 }
+            }
+
+            if (currentNode == endNode) {
+                Debug.Log("Path found");
+                return TracebackPath(startNode, endNode);
             }
 
             // Move the current node from the OpenSet => ClosedSet
             OpenSet.Remove(currentNode);
             ClosedSet.Add(currentNode);
 
-            if (currentNode == endNode) {
-                Debug.Log("Path found");
-                return TracebackPath(startNode, endNode);; //TODO: Not complete
-            }
 
             // Cicle through all the neighbours
             foreach (PathNode neighbour in currentNode.GetNeighbours(pathingData)) {
@@ -52,9 +53,9 @@ public static class Pathfinding {
                 float newCostToNeighbour = currentNode.gCost + GetDistance(currentNode, neighbour);
                 newCostToNeighbour += currentNode.pathCost; //? An attempt to implement tile's path cost
                 if (newCostToNeighbour < neighbour.gCost) {
+                    neighbour.cameFrom = currentNode;
                     neighbour.gCost = newCostToNeighbour;
                     neighbour.hCost = GetDistance(currentNode, endNode);
-                    neighbour.cameFrom = currentNode;
 
                     if (!OpenSet.Contains(neighbour)) OpenSet.Add(neighbour);
                 }
