@@ -3,12 +3,12 @@
  
  [Trello del proyecto](https://trello.com/b/gf9WJnsU/proyecto-de-pathfinding-en-unity)
  
- Todo mi código se encuentra en: Assets >> Code
+ Todo mi código se encuentra en: [Assets >> Code](Assets/Code/)
  
  Los objetos y tipos de suelos se añaden mediante ScriptableObjects, y se guardan en sus respectivas carpetas:
  * [Assets >> Resources >> ScriptableObjects](Assets/Resources/ScriptableObjects/)
-   * [GroundTypes](Assets/Resources/ScriptableObjects/GroundTypes)
-   * [ObjectDefinitions](Assets/Resources/ScriptableObjects/ObjectDefinitions)
+   * [GroundTypes](Assets/Resources/ScriptableObjects/GroundTypes/)
+   * [ObjectDefinitions](Assets/Resources/ScriptableObjects/ObjectDefinitions/)
  
  Ahí tengo organizado todo en carpetas y sub carpetas. Aunque la mayor parte solo son cosas necesarias para generar el mapa, etc.
  
