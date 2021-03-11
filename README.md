@@ -1,8 +1,10 @@
 # Pathfinding with AStar
  Este es un proyecto con el que pretendo aprender sobre la implementación de AStar en un entorno realista.
+ 
  [Trello del proyecto](https://trello.com/b/gf9WJnsU/proyecto-de-pathfinding-en-unity)
  
  Todo mi código se encuentra en: Assets >> Code
+ 
  Ahí tengo organizado todo en carpetas y sub carpetas. Aunque la mayor parte solo son cosas necesarias para generar el mapa, etc.
  
  
