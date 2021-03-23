@@ -65,7 +65,6 @@ public static class Pathfinding {
                 }
             }
         }
-        Debug.Log("No path");
         return null; // In case a path could not be found
     }
     private static List<PNode> TracebackPath(PNode startNode, PNode endNode) {
