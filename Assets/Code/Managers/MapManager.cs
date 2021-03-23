@@ -28,7 +28,7 @@ public class MapManager : MonoBehaviour {
         CreateGroundLayerTexture(mapGO, map.GroundLayer);                       // Create a texture for the ground
 
         // ObjectLayer
-        GameObject objectLayerGO = Utils.CreateGO("ObjectLayer", mapGO);   // Create the ObjectLayer's GO
+        GameObject objectLayerGO = Utils.CreateChildGO("ObjectLayer", mapGO);   // Create the ObjectLayer's GO
 
         // PathingLayer
     }

@@ -1,9 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting;
 
-public class PNode {
+public class PathNode {
     //? Variables
     //private PathDataLayer pathingData;
     public readonly Vector2Int position;
@@ -15,12 +14,12 @@ public class PNode {
     public float hCost = 0; // Total distance to goal / end node
     public float fCost { get => gCost + hCost; } // Total cost of this node
 
-    public PNode cameFrom;
+    public PathNode cameFrom;
 
     //? Properties
 
     //? Constructor
-    public PNode(PathDataLayer pathingData, Vector2Int position, PNode cameFrom = null) {
+    public PathNode(PathDataLayer pathingData, Vector2Int position, PathNode cameFrom = null) {
         //this.pathingData = pathingData;
         this.position = position;
 
@@ -31,8 +30,8 @@ public class PNode {
         this.cameFrom = (cameFrom == null) ? this : cameFrom;
     }
 
-    public List<PNode> GetNeighbours(PathDataLayer pathingData) {
-        List<PNode> neighbours = new List<PNode>();
+    public List<PathNode> GetNeighbours(PathDataLayer pathingData) {
+        List<PathNode> neighbours = new List<PathNode>();
 
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
@@ -43,37 +42,12 @@ public class PNode {
                 if (position.y + y < 0 || position.y + y >= pathingData.MapSize.x) continue; // Check Y axis
 
                 // Add the Neighbour to the list
-                neighbours.Add(new PNode(pathingData, new Vector2Int(position.x + x, position.y + y), this));
+                neighbours.Add(new PathNode(pathingData, new Vector2Int(position.x + x, position.y + y)));
             }
         }
 
         return neighbours;
     }
 
-    //? Operator overriding for comparing 2 nodes
-    // Just taking into consideration the positions, as other values may vary
-    public static bool operator == (PNode a, PNode b) {
-        if ((object)a == null)
-            return (object)b == null;
-
-        return a.Equals(b);
-    }
-    public static bool operator != (PNode a, PNode b) {
-        return !(a == b);
-    }
-    public override bool Equals(object other) {
-        if (other == null || GetType() != other.GetType()) return false;
-
-        var p2 = (PNode)other;
-        return (this.position == p2.position);
-    }
-
-    public override int GetHashCode() {
-        return this.position.GetHashCode() 
-            ^ isWalkable.GetHashCode()
-            ^ pathCost.GetHashCode()
-            ^ gCost.GetHashCode()
-            ^ hCost.GetHashCode()
-            ^ cameFrom.GetHashCode();
-    }
+    
 }

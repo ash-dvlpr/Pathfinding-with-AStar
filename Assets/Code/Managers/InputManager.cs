@@ -129,7 +129,7 @@ public class InputManager : MonoBehaviour {
     }
     private void UpdatePathVisual() {
         //First, get the path
-        List<PNode> path = Pathfinding.FindPath_AStar(
+        List<PathNode> path = Pathfinding.FindPath_AStar(
             MapManager.map.PathDataLayer, 
             Utils.WorldToGridPos(pathing_StartNode.transform.position, MapManager.mapSize),
             Utils.WorldToGridPos(pathing_EndNode.transform.position, MapManager.mapSize));

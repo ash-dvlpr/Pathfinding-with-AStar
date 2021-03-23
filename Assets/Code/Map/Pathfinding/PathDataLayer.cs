@@ -32,7 +32,7 @@ public class PathDataLayer {
         for (int x = 0; x < mapSize.x; x++) {
             for (int y = 0; y < mapSize.y; y++) {
                 // Its gonna be walkable If the ground tile is walkable & If not blocked by an object
-                isWalkable[x, y] = IsPositionPathable(new Vector2Int(x, y));
+                isWalkable[x, y] = IsPathable(new Vector2Int(x, y));
 
                 // Set the path cost values
                 pathCost[x, y] = AssetManager.groundTypes[parentMap.GroundLayer.GroundTiles[x, y].TypeName].PathCost;
@@ -50,14 +50,14 @@ public class PathDataLayer {
     public void UpdateData() {
         for (int x = 0; x < mapSize.x; x++) {
             for (int y = 0; y < mapSize.y; y++) {
-                isWalkable[x, y] = IsPositionPathable(new Vector2Int(x, y));
+                isWalkable[x, y] = IsPathable(new Vector2Int(x, y));
                 pathCost[x, y] = AssetManager.groundTypes[parentMap.GroundLayer.GroundTiles[x, y].TypeName].PathCost;
             }
         }
     } // Updates the information for the whole layer at once
     // public void UpdateNode(Vector2Int position) {} // Gets the information from the layers directly
     // public void UpdateNode(Vector2Int position, bool isWalkable, int pathCost) {} // You have to manualy pass the values
-    public bool IsPositionPathable(Vector2Int position) {
+    public bool IsPathable(Vector2Int position) {
         if (AssetManager.groundTypes[parentMap.GroundLayer.GroundTiles[position.x, position.y].TypeName].IsWalkable == false) return false;
         if (parentMap.ObjectLayer.IsTileEmpty(position)) return true; // Theres no object there, pathable
         return !parentMap.ObjectLayer.IsPathBlocked(position);
