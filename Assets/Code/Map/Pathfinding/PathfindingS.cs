@@ -29,7 +29,6 @@ public static class PathfindingS {
         PNodeS[,] nodes = new PNodeS[pathingData.MapSize.x, pathingData.MapSize.y];
         bool[,] walkableMap = pathingData.IsWalkable;
         int[,] pathCosts = pathingData.PathCost;
-        Debug.Log(walkableMap);
 
         // Initialize nodes[]
         for (int x = 0; x < pathingData.MapSize.x; x++) {
