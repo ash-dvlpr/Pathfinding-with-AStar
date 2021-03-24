@@ -22,5 +22,27 @@ public class PNodeS {
     }
 
 	//? Methods
+
+	//? Operator overloading
+	// For quicker comparison
+	public static bool operator == (PNodeS a, PNodeS b) {
+        if ((object)a == null)
+            return (object)b == null;
+        return a.Equals(b);
+    }
+    public static bool operator != (PNodeS a, PNodeS b) {
+        return !(a == b);
+    }
+    public override bool Equals(object other) {
+        if (other == null || GetType() != other.GetType()) return false;
+        var p2 = (PNodeS)other;
+        return (this.position == p2.position);
+    }
+    public override int GetHashCode() {
+        return
+              position.GetHashCode()
+            ^ gCost.GetHashCode()
+            ^ hCost.GetHashCode();
+    }
 }
 #nullable restore
