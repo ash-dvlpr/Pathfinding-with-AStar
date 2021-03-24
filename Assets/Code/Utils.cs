@@ -3,56 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class Utils {
-    private static List<int> usedIDs = new List<int>();
+	private static List<int> usedIDs = new List<int>();
 	private static int lastID = 0;
 	#region Vector2 Utils
 	// "Snaps" positions to Grid Positions & Back
-	public static Vector2Int WorldToGridPos(Vector2 rawPos, Vector2Int mapSize) => 
+	public static Vector2Int WorldToGridPos(Vector2 rawPos, Vector2Int mapSize) =>
 		new Vector2Int(Mathf.FloorToInt(rawPos.x) + mapSize.x / 2, Mathf.FloorToInt(rawPos.y) + mapSize.y / 2);
-	public static Vector2 GridToWorldPos(Vector2 gridPos, Vector2Int mapSize) => 
+	public static Vector2 GridToWorldPos(Vector2 gridPos, Vector2Int mapSize) =>
 		new Vector2(gridPos.x - mapSize.x / 2, gridPos.y - mapSize.y / 2);
 
 	// "Snaps" positions inside of bounds
-	public static Vector2Int DisplaceGridPosInsideBounds(Vector2Int pos, Vector2Int mapSize) => 
+	public static Vector2Int DisplaceGridPosInsideBounds(Vector2Int pos, Vector2Int mapSize) =>
 		new Vector2Int(Mathf.Clamp(pos.x, 0, mapSize.x - 1), Mathf.Clamp(pos.y, 0, mapSize.y - 1));
-	public static Vector2 DisplaceWorldPosInsideBounds(Vector2 pos, Vector2Int mapSize) => 
+	public static Vector2 DisplaceWorldPosInsideBounds(Vector2 pos, Vector2Int mapSize) =>
 		new Vector2(Mathf.Clamp(pos.x, -mapSize.x / 2, mapSize.x / 2), Mathf.Clamp(pos.y, -mapSize.y / 2, mapSize.y / 2));
 
 	// Vector2 to Vector2Int
-	public static Vector2Int V2toV2Int(Vector2 pos) => 
+	public static Vector2Int V2toV2Int(Vector2 pos) =>
 		new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y));
 	#endregion
 	#region GameObject Utils
 	public static GameObject CreateGO(string name) {
-		GameObject GO = new GameObject(name);			// Create GO
-		GO.transform.position = new Vector2(0, 0);		// Places the object at (0,0)
+		GameObject GO = new GameObject(name);           // Create GO
+		GO.transform.position = new Vector2(0, 0);      // Places the object at (0,0)
 		return GO;
 	} // Creates an [empty] GameObject
 	public static GameObject CreateGO(string name, GameObject parent) {
-		GameObject GO = new GameObject(name);			// Create GO
-		GO.transform.parent = parent.transform;			// Sets GO's Parent GameObject
-		GO.transform.position = new Vector2(0, 0);		// Places the object at (0,0)
+		GameObject GO = new GameObject(name);           // Create GO
+		GO.transform.parent = parent.transform;         // Sets GO's Parent GameObject
+		GO.transform.position = new Vector2(0, 0);      // Places the object at (0,0)
 		return GO;
 	} // Creates an [empty] [child] GameObject
 	public static GameObject CreateSpriteGO(string name) {
-		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));		// Create GO & Add SpriteRenderer Component
-		SpriteGO.transform.position = new Vector2(0, 0);						// Places the object at (0,0)
+		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));     // Create GO & Add SpriteRenderer Component
+		SpriteGO.transform.position = new Vector2(0, 0);                        // Places the object at (0,0)
 		return SpriteGO;
 	} // Creates an [empty] Sprite
 	public static GameObject CreateSpriteGO(string name, Vector2 position) {
-		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));		// Create GO & Add SpriteRenderer Component
-		SpriteGO.transform.position = position;									// Places the GO at (position)
+		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));     // Create GO & Add SpriteRenderer Component
+		SpriteGO.transform.position = position;                                 // Places the GO at (position)
 		return SpriteGO;
 	} // Creates an [empty] Sprite
 	public static GameObject CreateSpriteGO(string name, Vector2 position, GameObject parent) {
-		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));		// Create GO & Add SpriteRenderer Component
-		SpriteGO.transform.parent = parent.transform;							// Sets GO's Parent GameObject
-		SpriteGO.transform.position = position;									// Places the GO at (position)
+		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));     // Create GO & Add SpriteRenderer Component
+		SpriteGO.transform.parent = parent.transform;                           // Sets GO's Parent GameObject
+		SpriteGO.transform.position = position;                                 // Places the GO at (position)
 		return SpriteGO;
 	} // Creates an [empty] [child] Sprite at (position)
-	public static GameObject CreateQuad(string name, GameObject parent, Vector2 centerPos, Vector2Int size) {
+	public static GameObject CreateWorldPosQuad(string name, GameObject parent, Vector2 centerPos, Vector2Int size) {
 		// Make the empty game object to hold this
-		GameObject QuadGO = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer));	// Also give it the components needed
+		GameObject QuadGO = new GameObject(name, typeof(MeshFilter), typeof(MeshRenderer)); // Also give it the components needed
 
 		// Position the GameObject and set its parent
 		QuadGO.transform.position = centerPos;
@@ -79,7 +79,7 @@ public static class Utils {
 		return QuadGO;
 	} // Creates an [empty] [child] Quad, of (size) size, centered at (position)
 	#endregion
-
+	#region Area Utils
 	// Gets the bottom left corner of an "area"
 	public static Vector2Int GetBottomLeftCornerOfObject(Vector2Int position, Vector2Int objectSize, Orientation orientation) {
 		// Depends on orientation
@@ -95,8 +95,53 @@ public static class Utils {
 			default: return Vector2Int.zero; // Non legal orientation
 		}
 	}
+	#endregion
+	#region Pathing Utils
+	// Creating the Renderers
+	public static GameObject CreateWorldPosPathRenderer(string name, GameObject parent, List<Vector2> vertices) {
+		GameObject renderer = new GameObject(name, typeof(LineRenderer));				// Create GO & Add LineRenderer Component
+		renderer.GetComponent<LineRenderer>().positionCount = vertices.Count;			// Set number of vertices
+		for (int i = 0; i <= vertices.Count; i++) {										// Set all vertices 
+			renderer.GetComponent<LineRenderer>().SetPosition(i, vertices[i]);
+		}
+		return renderer;
+	} // Creates a [child] Line with (list) vertices
+	public static GameObject CreateGridPosPathRenderer(string name, GameObject parent, List<Vector2Int> vertices, Vector2Int mapSize) {
+		GameObject renderer = new GameObject(name, typeof(LineRenderer));				// Create GO & Add LineRenderer Component
+		renderer.GetComponent<LineRenderer>().positionCount = vertices.Count;			// Set number of vertices
+		for (int i = 0; i <= vertices.Count; i++) {										// Set all vertices 
+			Vector2 _verticePos = Utils.GridToWorldPos(vertices[i], mapSize);			// Fix positions from GridPos to WorldPos
+			renderer.GetComponent<LineRenderer>().SetPosition(i, _verticePos);
+		}
+		return renderer;
+	} // Creates a [child] Line with (list) vertices
 
-	// Procedural generation stuff
+	// Updating the Renderers
+	public static void UpdateWorldPosPathRenderer(ref GameObject renderer, List<Vector2> newVertices) {
+		renderer.GetComponent<LineRenderer>().positionCount = newVertices.Count;		// Set number of vertices
+		for (int i = 0; i <= newVertices.Count; i++) {									// Set all vertices 
+			renderer.GetComponent<LineRenderer>().SetPosition(i, newVertices[i]);
+		}
+	}
+	public static void UpdateGridPosPathRenderer(ref GameObject renderer, List<Vector2Int> newVertices, Vector2Int mapSize) {
+		renderer.GetComponent<LineRenderer>().positionCount = newVertices.Count;		// Set number of vertices
+		for (int i = 0; i <= newVertices.Count; i++) {									// Set all vertices 
+			Vector2 _verticePos = Utils.GridToWorldPos(newVertices[i], mapSize);		// Fix positions from GridPos to WorldPos
+			renderer.GetComponent<LineRenderer>().SetPosition(i, _verticePos);
+		}
+	}
+
+	public static void DebugLog_Path(List<Vector2Int> path) {
+		string logMessage = $"Path from ({path[0].x},{path[0].y}) to ({path[path.Count - 1].x},{path[path.Count - 1].x}): \n";
+		path.Remove(path[0]); // Remove from the list the fist node
+		foreach (var node in path) {
+			logMessage += $"=> ({node.x},{node.y}) ";
+		}
+		Debug.Log(logMessage);
+	} // Logs a path to the debug console
+	#endregion
+
+	#region Procedural Generation
 	public static float[,] GenerateNoiseMap(Vector2Int mapSize, string seed, float scale = 75) {
 		float[,] NoiseMap = new float[mapSize.x, mapSize.y]; // Initialize the array;
 
@@ -153,10 +198,10 @@ public static class Utils {
 				return AssetManager.groundTypes["empty"];
 		}
 	} // TODO: This is harcoded; Should be able to pass on a Biome (template) and parse it
-
-    #region ID Generation
-    public static int GenerateRandomID() {
-        int newID;
+	#endregion
+	#region ID Generation
+	public static int GenerateRandomID() {
+		int newID;
 		do { // Generate a new ID
 			newID = (int)Random.Range(1, int.MaxValue);
 			//Debug.Log(newOID);//! Debug
@@ -177,12 +222,5 @@ public static class Utils {
 		usedIDs.Add(newID);
 		return newID;
 	} // Generates a [unique] [incremental] ID (starts counting from 1)
-    #endregion
-}
-
-public enum Orientation {
-    South = 0,
-    West = 1,
-    North = 2,
-    East = 3
+	#endregion
 }
