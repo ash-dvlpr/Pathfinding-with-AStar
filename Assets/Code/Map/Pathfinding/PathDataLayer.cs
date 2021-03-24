@@ -8,13 +8,13 @@ public class PathDataLayer {
     private Vector2Int mapSize;
 
     private bool[,] isWalkable;    // Affected by both the ground tile type & objects that block the path
-    private float[,] pathCost;       // Affected by the ground tile type
+    private int[,] pathCost;       // Affected by the ground tile type
 
     //? Properties
     public Map ParentMap { get => parentMap; }
     public Vector2Int MapSize { get => mapSize; }
     public bool[,] IsWalkable { get => isWalkable; }
-    public float[,] PathCost { get => pathCost; }
+    public int[,] PathCost { get => pathCost; }
 
     //? Constructor
     public PathDataLayer(Map parent, Vector2Int mapSize) {
@@ -23,7 +23,7 @@ public class PathDataLayer {
 
         // "Nodes" are a combination of 2 values, a boolean for checking if that position can be pathed though, and a path cost
         this.isWalkable = new bool[mapSize.x, mapSize.y];
-        this.pathCost = new float[mapSize.x, mapSize.y];
+        this.pathCost = new int[mapSize.x, mapSize.y];
         InitializeNodes();
     }
 

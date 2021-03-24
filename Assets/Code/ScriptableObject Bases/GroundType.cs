@@ -10,7 +10,7 @@ public class GroundType : ScriptableObject {
     [SerializeField] private Sprite sprite;
 
     [SerializeField] private bool isWalkable = true;
-    [SerializeField] private float pathCost;
+    [SerializeField] private int pathCost;
 
     //? Properties
     public string Name_ID { get => name_id; }
@@ -18,10 +18,10 @@ public class GroundType : ScriptableObject {
     public Sprite Sprite { get => sprite; }
 
     public bool IsWalkable { get => isWalkable; }
-    public float PathCost{ get => pathCost; }
+    public int PathCost{ get => pathCost; }
 
     //? Constructor
-    public GroundType(string typeNameID, string typeName, Sprite tileSprite, bool isWalkable, float pathCost)
+    public GroundType(string typeNameID, string typeName, Sprite tileSprite, bool isWalkable, int pathCost)
     {
         this.name_id = typeNameID;
         this.name = typeName;

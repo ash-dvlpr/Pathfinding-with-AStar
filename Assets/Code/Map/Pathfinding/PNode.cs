@@ -40,7 +40,7 @@ public class PNode {
 
                 // Check for outside of bounds, and skip those "neighbours"
                 if (position.x + x < 0 || position.x + x >= pathingData.MapSize.x) continue; // Check X axis
-                if (position.y + y < 0 || position.y + y >= pathingData.MapSize.x) continue; // Check Y axis
+                if (position.y + y < 0 || position.y + y >= pathingData.MapSize.y) continue; // Check Y axis
 
                 // Add the Neighbour to the list
                 neighbours.Add(new PNode(pathingData, new Vector2Int(position.x + x, position.y + y), this));

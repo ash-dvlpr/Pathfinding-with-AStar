@@ -6,22 +6,16 @@ using UnityEngine;
 public class PNodeS {
 	//? Data
 	public readonly Vector2Int position;
-	public PNodeS? previous;
-
-	public readonly bool isWalkable;
-    public readonly float pathCost;
+	public PNodeS? breadcrumbs;
 
 	public int gCost;
 	public int hCost;
 	public int fCost { get => gCost + gCost; }
 	
 	//? Constructors
-	public PNodeS(Vector2Int position, bool isWalkable, float pathCost, int gCost, int hCost, PNodeS? previous = null) {
+	public PNodeS(Vector2Int position, int gCost, int hCost, PNodeS? breadcrumbs = null) {
 		this.position = position;
-        this.previous = previous;
-
-        this.isWalkable = isWalkable;
-		this.pathCost = pathCost;
+        this.breadcrumbs = breadcrumbs;
 
 		this.gCost = gCost;
 		this.hCost = hCost;
