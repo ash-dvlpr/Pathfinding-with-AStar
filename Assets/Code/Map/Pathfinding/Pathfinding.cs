@@ -29,17 +29,17 @@ public static class Pathfinding {
         while (OpenSet.Count > 0) {
             PNode currentNode = OpenSet[0];
 
+            if (currentNode == endNode) {
+                Debug.Log("Path found");
+                endNode.cameFrom = currentNode.cameFrom; //! Should change
+                return TracebackPath(startNode, endNode);
+            }
+
             // Find the node in the OpenSet with the lowest fCost
             for (int i = 1; i < OpenSet.Count; i++) {
                 if (OpenSet[i].fCost <= currentNode.fCost || OpenSet[i].hCost < currentNode.hCost) {
                     currentNode = OpenSet[i];
                 }
-            }
-
-            if (currentNode == endNode) {
-                Debug.Log("Path found");
-                endNode = currentNode; //! Should change
-                return TracebackPath(startNode, endNode);
             }
 
             // Move the current node from the OpenSet => ClosedSet

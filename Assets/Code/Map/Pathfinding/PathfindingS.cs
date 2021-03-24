@@ -3,56 +3,86 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public static class PathfindingS {
-    // The A* Algorithm explained http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
-    // Explanation with animations and interactive graphs https://www.redblobgames.com/pathfinding/a-star/introduction.html
-    // Visualization of different pathfinding algorithms https://movingai.com/SAS/SUB/
-    public static List<PNodeS> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos, bool correctPositions = false) {
-        #region SanityChecks
-        // TODO: correct positions to move to the closest pathable position
+	// The A* Algorithm explained http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
+	// Explanation with animations and interactive graphs https://www.redblobgames.com/pathfinding/a-star/introduction.html
+	// Visualization of different pathfinding algorithms https://movingai.com/SAS/SUB/
+	public static List<PNodeS> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos, bool correctPositions = false) {
+		#region SanityChecks
+		// TODO: correct positions to move to the closest pathable position
 
-        // Check for outside of bounds positions
-        if (startPos.x < 0 || startPos.x >= pathingData.MapSize.x || startPos.y < 0 || startPos.y >= pathingData.MapSize.y) {
-            Debug.LogError("Start Position is [out of bounds]");
-            return null;
-        } // Start Pos
-        if (endPos.x < 0 || endPos.x >= pathingData.MapSize.x || endPos.y < 0 || endPos.y >= pathingData.MapSize.y) {
-            Debug.LogError("End Position is [out of bounds]");
-            return null;
-        } // End Pos
+		// Check for outside of bounds positions
+		if (startPos.x < 0 || startPos.x >= pathingData.MapSize.x || startPos.y < 0 || startPos.y >= pathingData.MapSize.y) {
+			Debug.LogError("Start Position is [out of bounds]");
+			return null;
+		} // Start Pos
+		if (endPos.x < 0 || endPos.x >= pathingData.MapSize.x || endPos.y < 0 || endPos.y >= pathingData.MapSize.y) {
+			Debug.LogError("End Position is [out of bounds]");
+			return null;
+		} // End Pos
 
-        // If either the startPos or the endPos are non pathable, path won't be found
-        if (pathingData.IsWalkable[startPos.x, startPos.y] == false || pathingData.IsWalkable[endPos.x, endPos.y] == false) {
-            Debug.Log("Start/End Position is [unpathable]");
-            return null;
-        }
-        #endregion
+		// If either the startPos or the endPos are non pathable, path won't be found
+		if (pathingData.IsWalkable[startPos.x, startPos.y] == false || pathingData.IsWalkable[endPos.x, endPos.y] == false) {
+			Debug.Log("Start/End Position is [unpathable]");
+			return null;
+		}
+		#endregion
+		PNodeS[,] nodes = new PNodeS[pathingData.MapSize.x, pathingData.MapSize.y];
+		bool[,] walkable = pathingData.IsWalkable;
+		float[,] costs = pathingData.PathCost;
 
-        PNodeS[,] nodes = new PNodeS[pathingData.MapSize.x, pathingData.MapSize.y];
-        // Initialize nodes[]
-        for (int x = 0; x < pathingData.MapSize.x; x++) {
-            for (int y = 0; y < pathingData.MapSize.y; y++) {
-                // Create nodes
-                nodes[x, y] = new PNodeS(
-                    new Vector2Int(x, y),
-                    pathingData.IsWalkable[x, y],
-                    pathingData.PathCost[x, y], 0, 0);
+		// Initialize nodes[]
+		for (int x = 0; x < pathingData.MapSize.x; x++) {
+			for (int y = 0; y < pathingData.MapSize.y; y++) {
+				// Create nodes
+				nodes[x, y] = new PNodeS(new Vector2Int(x, y), walkable[x, y], costs[x, y], 0, 0);
+			}
+		}
+
+		PNodeS startNode = nodes[startPos.x, startPos.y];
+		PNodeS endNode = nodes[endPos.x, endPos.y];
+
+		//? Open & Closed sets
+		List<PNodeS> OpenSet = new List<PNodeS> { startNode }; //? Add the start node to the open set
+		List<PNodeS> ClosedSet = new List<PNodeS>();
+
+		// Loop
+		while (OpenSet.Count > 0) {
+			PNodeS currentNode = OpenSet[0];
+
+			// If currentNode == endNode => Path Found
+			if (currentNode == endNode) {
+				Debug.Log("Path found");
+				//return TracebackPath(endNode, startNode);
+			}
+
+			// Find the node in the OpenSet with the lowest fCost
+			for (int i = 1; i < OpenSet.Count; i++) {
+                if (OpenSet[i].fCost <= currentNode.fCost || OpenSet[i].hCost < currentNode.hCost) {
+                    currentNode = OpenSet[i];
+                }
             }
-        }
 
-        PNodeS startNode = nodes[startPos.x, startPos.y];
-        PNodeS endNode = nodes[endPos.x, endPos.y];
+			// Move the current node from the OpenSet => ClosedSet
 
-        //? Open & Closed sets
-        List<PNodeS> OpenSet = new List<PNodeS> { startNode }; //? Add the start node to the open set
-        List<PNodeS> ClosedSet = new List<PNodeS>();
+			// Cicle through all the neighbours
 
-        // Loop
+				// If a neighbour is Un-Walkable / Un-Pathable or its on the ClosedSet => skip
+				// Calculate new gCost to neighbour
+		}
 
-        Debug.Log("Unable to find a path");
-        return null; // In case a path could not be found
+		Debug.Log("Unable to find a path");
+		return null; // In case a path could not be found
+	}
+
+	private static List<PNodeS> TracebackPath(PNodeS endNode, PNodeS startNode) {
+		return null;
     }
 
-    // List<PNodeS> TracebackPath(PNodeS endNode, PNodeS startNode)
+	private static int GetDistance(PNodeS a, PNodeS b) {
+		return 0;
+    }
 
-    // int GetDistance(PNodeS a, PNodeS b)
+	private static List<PNodeS> GetNeighbours() {
+		return null;
+    }
 }
