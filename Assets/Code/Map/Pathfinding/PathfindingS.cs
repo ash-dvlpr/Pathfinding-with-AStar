@@ -29,6 +29,7 @@ public static class PathfindingS {
         PNodeS[,] nodes = new PNodeS[pathingData.MapSize.x, pathingData.MapSize.y];
         bool[,] walkableMap = pathingData.IsWalkable;
         int[,] pathCosts = pathingData.PathCost;
+        Debug.Log(walkableMap);
 
         // Initialize nodes[]
         for (int x = 0; x < pathingData.MapSize.x; x++) {
@@ -44,7 +45,7 @@ public static class PathfindingS {
         PNodeS startNode = nodes[startPos.x, startPos.y];
         PNodeS endNode = nodes[endPos.x, endPos.y];
 
-        //? Open & Closed sets
+        // Open & Closed sets
         List<PNodeS> OpenSet = new List<PNodeS> { startNode }; //? Add the start node to the open set
         List<PNodeS> ClosedSet = new List<PNodeS>();
 
@@ -76,11 +77,11 @@ public static class PathfindingS {
                 if (ClosedSet.Contains(neighbour)) continue;
 
                 // Calculate new gCost
-                int newGCost = currentNode.gCost + pathCosts[neighbour.position.x, neighbour.position.y] + GetDistance(neighbour, currentNode);
+                int newCost = currentNode.gCost + pathCosts[neighbour.position.x, neighbour.position.y];
 
-                if (newGCost < neighbour.gCost) {
+                if (newCost < neighbour.gCost) {
                     neighbour.breadcrumbs = currentNode;
-                    neighbour.gCost = newGCost;
+                    neighbour.gCost = newCost;
                     neighbour.hCost = GetDistance(currentNode, endNode);
 
                     if (!OpenSet.Contains(neighbour)) OpenSet.Add(neighbour);
@@ -114,6 +115,8 @@ public static class PathfindingS {
     } // Manhattan distance
 
     private static List<PNodeS> GetNeighbours(Vector2Int nodePos, PNodeS[,] nodes, Vector2Int mapSize, bool[,] walkableNodes) {
+        //Debug.Log($"Node: [{nodePos.x},{nodePos.y}]");
+
         List<PNodeS> neighbours = new List<PNodeS>();
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
@@ -127,6 +130,7 @@ public static class PathfindingS {
                 if (!walkableNodes[nodePos.x + x, nodePos.y + y]) continue;
 
                 // Add the Neighbour to the list
+                //Debug.Log($"Neighbour: [{nodePos.x + x},{nodePos.y + y}]");
                 neighbours.Add(nodes[nodePos.x + x, nodePos.y + y]);
             }
         }

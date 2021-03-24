@@ -129,12 +129,12 @@ public class InputManager : MonoBehaviour {
     }
     private void UpdatePathVisual() {
         //First, get the path
-        //List<PathNode> path = Pathfinding.FindPath_AStar(
-        //    MapManager.map.PathDataLayer,
-        //    Utils.WorldToGridPos(pathing_StartNode.transform.position, MapManager.mapSize),
-        //    Utils.WorldToGridPos(pathing_EndNode.transform.position, MapManager.mapSize));
+        List<PNodeS> path = PathfindingS.FindPath_AStar(
+            MapManager.map.PathDataLayer,
+            Utils.WorldToGridPos(pathing_StartNode.transform.position, MapManager.mapSize),
+            Utils.WorldToGridPos(pathing_EndNode.transform.position, MapManager.mapSize));
 
-        //if (path == null) return;
+        if (path == null) return;
         //Draw lines between all the nodes that form the path
         //foreach (var n in path) {
         //    //
