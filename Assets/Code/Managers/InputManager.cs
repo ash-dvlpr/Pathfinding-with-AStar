@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class InputManager : MonoBehaviour {
 	//? References to other Managers (Scripts)
 	[Header("References to Managers")]
-	public MapManager MapManager;
+	public GameObject MapManager_GO;
+	private MapManager MapManager;
 	public GameObject uiCanvas;
 
 	//? Buttons and Text fields
@@ -40,7 +41,7 @@ public class InputManager : MonoBehaviour {
 	[Header("Pathfinding")]
 	public GameObject pathing_StartNode;
 	public GameObject pathing_EndNode;
-	public GameObject pathing_PathRenderer;
+	private GameObject pathing_PathRenderer;
 
 	[Header("Other")]
 	private ToolMode currentMode = ToolMode.Pathfinding; // Default mode is the Pathfinding Mode
@@ -49,9 +50,12 @@ public class InputManager : MonoBehaviour {
 
 	private void Start() {
 		gameCamera = CameraHandle.GetComponentInChildren<Camera>();
+		MapManager = MapManager_GO.GetComponent<MapManager>();
+		
 		previewImage = ToolPreview_Image.GetComponent<Image>();
 		previewSelectedText = ToolPreview_SelectedName.GetComponent<Text>();
-		ChangeMode(ToolMode.Pathfinding);
+
+        ChangeMode(ToolMode.Pathfinding);
 		//Application.targetFrameRate = 10; //! Debugging
 	}
 	void Update() {
@@ -125,17 +129,21 @@ public class InputManager : MonoBehaviour {
 	}
 	private void UpdatePathVisual() {
 		//First, get the path
-		List<PNodeS> path = PathfindingS.FindPath_AStar(
+		List<Vector2Int> path = PathfindingS.FindPath_AStar(
 			MapManager.map.PathDataLayer,
 			Utils.WorldToGridPos(pathing_StartNode.transform.position, MapManager.mapSize),
 			Utils.WorldToGridPos(pathing_EndNode.transform.position, MapManager.mapSize));
 
 		if (path == null) return;
-		//Draw lines between all the nodes that form the path
-		//foreach (var n in path) {
-		//    //
-		//}
-	}
+
+		// Create the Renderer if not already done
+		if (pathing_PathRenderer == null) {
+			pathing_PathRenderer = Utils.CreateGridPosPathRenderer("PathRenderer", MapManager_GO, path, MapManager.mapSize);
+        }
+
+		//Utils.DebugLog_Path(path); //! Debug
+		Utils.UpdateGridPosPathRenderer(ref pathing_PathRenderer, path, MapManager.mapSize);
+    }
 	private void ChangeSelectedPreview(int index = 0) {
 		// TODO: ToolMode dependant stuff
 		try {

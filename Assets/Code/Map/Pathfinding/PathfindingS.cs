@@ -6,7 +6,7 @@ public static class PathfindingS {
 	// The A* Algorithm explained http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
 	// Explanation with animations and interactive graphs https://www.redblobgames.com/pathfinding/a-star/introduction.html
 	// Visualization of different pathfinding algorithms https://movingai.com/SAS/SUB/
-	public static List<PNodeS> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos, bool correctPositions = false) {
+	public static List<Vector2Int> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos, bool correctPositions = false) {
 		#region SanityChecks
 		// TODO: correct positions to move to the closest pathable position
 
@@ -54,7 +54,7 @@ public static class PathfindingS {
 
 			// If currentNode == endNode => Path Found
 			if (currentNode == endNode) {
-				Debug.Log("Path found");
+				//Debug.Log("Path found");
 				return TracebackPath(endNode, startNode);
 			}
 
@@ -88,20 +88,19 @@ public static class PathfindingS {
 			}
 		}
 
-		Debug.Log("Unable to find a path");
+		//Debug.Log("Unable to find a path");
 		return null; // In case a path could not be found
 	}
 
-	private static List<PNodeS> TracebackPath(PNodeS endNode, PNodeS startNode) {
-		List<PNodeS> path = new List<PNodeS>();
+	private static List<Vector2Int> TracebackPath(PNodeS endNode, PNodeS startNode) {
 		PNodeS currentNode = endNode;
+		List<Vector2Int> path = new List<Vector2Int> { endNode.position };
 
 		while (currentNode != startNode) {
-			path.Add(currentNode);
 			currentNode = currentNode.breadcrumbs;
-		}
-		// Reverse the path, as currently it starts at the end
-		path.Reverse();
+			path.Add(currentNode.position);
+		}		
+		path.Reverse(); // Reverse the path, as currently it starts at the end
 		return path;
 	}
 

@@ -31,17 +31,17 @@ public static class Utils {
 	public static GameObject CreateGO(string name, GameObject parent) {
 		GameObject GO = new GameObject(name);           // Create GO
 		GO.transform.parent = parent.transform;         // Sets GO's Parent GameObject
-		GO.transform.position = new Vector2(0, 0);      // Places the object at (0,0)
+		GO.transform.position = Vector2.zero;			// Places the object at (0,0)
 		return GO;
 	} // Creates an [empty] [child] GameObject
 	public static GameObject CreateSpriteGO(string name) {
-		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));     // Create GO & Add SpriteRenderer Component
-		SpriteGO.transform.position = new Vector2(0, 0);                        // Places the object at (0,0)
+		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));		// Create GO & Add SpriteRenderer Component
+		SpriteGO.transform.position = Vector2.zero;								// Places the object at (0,0)
 		return SpriteGO;
 	} // Creates an [empty] Sprite
 	public static GameObject CreateSpriteGO(string name, Vector2 position) {
 		GameObject SpriteGO = new GameObject(name, typeof(SpriteRenderer));     // Create GO & Add SpriteRenderer Component
-		SpriteGO.transform.position = position;                                 // Places the GO at (position)
+		SpriteGO.transform.position = position;									// Places the GO at (position)
 		return SpriteGO;
 	} // Creates an [empty] Sprite
 	public static GameObject CreateSpriteGO(string name, Vector2 position, GameObject parent) {
@@ -78,6 +78,12 @@ public static class Utils {
 		// Return the Quad's GameObject
 		return QuadGO;
 	} // Creates an [empty] [child] Quad, of (size) size, centered at (position)
+	public static GameObject CreateLineGO(string name, GameObject parent) {
+		GameObject line = new GameObject(name, typeof(LineRenderer));           // Create GO & Add LineRenderer Component
+		line.transform.position = Vector2.zero;									// Sets GO's Parent GameObject  
+		line.transform.parent = parent.transform;                               // Places the object at (0,0)
+		return line;
+	} // Creates an [empty] [child] Line
 	#endregion
 	#region Area Utils
 	// Gets the bottom left corner of an "area"
@@ -99,19 +105,21 @@ public static class Utils {
 	#region Pathing Utils
 	// Creating the Renderers
 	public static GameObject CreateWorldPosPathRenderer(string name, GameObject parent, List<Vector2> vertices) {
-		GameObject renderer = new GameObject(name, typeof(LineRenderer));				// Create GO & Add LineRenderer Component
+		GameObject renderer = new GameObject(name, typeof(LineRenderer));               // Create GO & Add LineRenderer Component
+		renderer.transform.parent = parent.transform;								    // Sets GO's Parent GameObject
 		renderer.GetComponent<LineRenderer>().positionCount = vertices.Count;			// Set number of vertices
-		for (int i = 0; i <= vertices.Count; i++) {										// Set all vertices 
-			renderer.GetComponent<LineRenderer>().SetPosition(i, vertices[i]);
+		for (int i = 0; i < vertices.Count; i++) {                                      // Set all vertices 
+			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)vertices[i] + new Vector3(+0.5f, +0.5f, -20));
 		}
 		return renderer;
 	} // Creates a [child] Line with (list) vertices
 	public static GameObject CreateGridPosPathRenderer(string name, GameObject parent, List<Vector2Int> vertices, Vector2Int mapSize) {
 		GameObject renderer = new GameObject(name, typeof(LineRenderer));				// Create GO & Add LineRenderer Component
+		renderer.transform.parent = parent.transform;								    // Sets GO's Parent GameObject
 		renderer.GetComponent<LineRenderer>().positionCount = vertices.Count;			// Set number of vertices
-		for (int i = 0; i <= vertices.Count; i++) {										// Set all vertices 
-			Vector2 _verticePos = Utils.GridToWorldPos(vertices[i], mapSize);			// Fix positions from GridPos to WorldPos
-			renderer.GetComponent<LineRenderer>().SetPosition(i, _verticePos);
+		for (int i = 0; i < vertices.Count; i++) {										// Set all vertices 
+			Vector2 verticePos = Utils.GridToWorldPos(vertices[i], mapSize);			// Fix positions from GridPos to WorldPos
+			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)verticePos + new Vector3(+0.5f, +0.5f, -20));
 		}
 		return renderer;
 	} // Creates a [child] Line with (list) vertices
@@ -119,21 +127,20 @@ public static class Utils {
 	// Updating the Renderers
 	public static void UpdateWorldPosPathRenderer(ref GameObject renderer, List<Vector2> newVertices) {
 		renderer.GetComponent<LineRenderer>().positionCount = newVertices.Count;		// Set number of vertices
-		for (int i = 0; i <= newVertices.Count; i++) {									// Set all vertices 
-			renderer.GetComponent<LineRenderer>().SetPosition(i, newVertices[i]);
+		for (int i = 0; i < newVertices.Count; i++) {									// Set all vertices 
+			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)newVertices[i] + new Vector3(+0.5f, +0.5f, -20));
 		}
 	}
 	public static void UpdateGridPosPathRenderer(ref GameObject renderer, List<Vector2Int> newVertices, Vector2Int mapSize) {
 		renderer.GetComponent<LineRenderer>().positionCount = newVertices.Count;		// Set number of vertices
-		for (int i = 0; i <= newVertices.Count; i++) {									// Set all vertices 
-			Vector2 _verticePos = Utils.GridToWorldPos(newVertices[i], mapSize);		// Fix positions from GridPos to WorldPos
-			renderer.GetComponent<LineRenderer>().SetPosition(i, _verticePos);
+		for (int i = 0; i < newVertices.Count; i++) {									// Set all vertices 
+			Vector2 verticePos = Utils.GridToWorldPos(newVertices[i], mapSize);			// Fix positions from GridPos to WorldPos
+			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)verticePos  + new Vector3(+0.5f, +0.5f, -20));
 		}
 	}
 
 	public static void DebugLog_Path(List<Vector2Int> path) {
 		string logMessage = $"Path from ({path[0].x},{path[0].y}) to ({path[path.Count - 1].x},{path[path.Count - 1].x}): \n";
-		path.Remove(path[0]); // Remove from the list the fist node
 		foreach (var node in path) {
 			logMessage += $"=> ({node.x},{node.y}) ";
 		}
