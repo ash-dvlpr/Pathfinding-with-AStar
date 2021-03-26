@@ -58,7 +58,7 @@ public class PathDataLayer {
     // public void UpdateNode(Vector2Int position) {} // Gets the information from the layers directly
     // public void UpdateNode(Vector2Int position, bool isWalkable, int pathCost) {} // You have to manualy pass the values
     public bool IsPositionPathable(Vector2Int position) {
-        if (AssetManager.groundTypes[parentMap.GroundLayer.GroundTiles[position.x, position.y].TypeName].IsWalkable == false) return false;
+        if (!AssetManager.groundTypes[parentMap.GroundLayer.GroundTiles[position.x, position.y].TypeName].IsWalkable) return false;
         if (parentMap.ObjectLayer.IsTileEmpty(position)) return true; // Theres no object there, pathable
         return !parentMap.ObjectLayer.IsPathBlocked(position);
     }

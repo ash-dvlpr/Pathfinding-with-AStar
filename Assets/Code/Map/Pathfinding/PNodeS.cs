@@ -2,26 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-#nullable enable
 public class PNodeS {
+#nullable enable
+
 	//? Data
 	public readonly Vector2Int position;
 	public PNodeS? breadcrumbs;
+    public bool closed;
 
 	public int gCost;
 	public int hCost;
 	public int fCost { get => gCost + gCost; }
 	
 	//? Constructors
-	public PNodeS(Vector2Int position, int gCost, int hCost, PNodeS? breadcrumbs = null) {
+	public PNodeS(Vector2Int position, int gCost = int.MaxValue, int hCost = int.MaxValue, PNodeS? breadcrumbs = null) {
 		this.position = position;
         this.breadcrumbs = breadcrumbs;
+        this.closed = false;
 
 		this.gCost = gCost;
 		this.hCost = hCost;
     }
 
 	//? Methods
+
 
 	//? Operator overloading
 	// For quicker comparison
@@ -44,5 +48,5 @@ public class PNodeS {
             ^ gCost.GetHashCode()
             ^ hCost.GetHashCode();
     }
-}
 #nullable restore
+}

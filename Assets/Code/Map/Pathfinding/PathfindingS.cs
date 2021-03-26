@@ -6,7 +6,8 @@ public static class PathfindingS {
 	// The A* Algorithm explained http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html
 	// Explanation with animations and interactive graphs https://www.redblobgames.com/pathfinding/a-star/introduction.html
 	// Visualization of different pathfinding algorithms https://movingai.com/SAS/SUB/
-	public static List<Vector2Int> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos, bool correctPositions = false) {
+	// Wikipedia article https://en.wikipedia.org/wiki/A*_search_algorithm
+	public static List<Vector2Int> FindPath_AStar(PathDataLayer pathingData, Vector2Int startPos, Vector2Int endPos) {
 		#region SanityChecks
 		// TODO: correct positions to move to the closest pathable position
 
@@ -27,36 +28,25 @@ public static class PathfindingS {
 		}
 		#endregion
 		PNodeS[,] nodes = new PNodeS[pathingData.MapSize.x, pathingData.MapSize.y];
-		bool[,] walkableMap = pathingData.IsWalkable;
+		bool[,] pathableMap = pathingData.IsWalkable;
 		int[,] pathCosts = pathingData.PathCost;
 
 		// Initialize nodes[]
 		for (int x = 0; x < pathingData.MapSize.x; x++) {
 			for (int y = 0; y < pathingData.MapSize.y; y++) {
-				// Create nodes
-				nodes[x, y] = new PNodeS(
-					new Vector2Int(x, y),
-					int.MaxValue,
-					int.MaxValue);
+				nodes[x, y] = new PNodeS(new Vector2Int(x, y));
 			}
 		}
 
-		PNodeS startNode = nodes[startPos.x, startPos.y];
+		PNodeS startNode = nodes[startPos.x, startPos.y]; 
 		PNodeS endNode = nodes[endPos.x, endPos.y];
+		startNode.gCost = 0; // Starting node gCost
 
-		// Open & Closed sets
 		List<PNodeS> OpenSet = new List<PNodeS> { startNode }; //? Add the start node to the open set
-		List<PNodeS> ClosedSet = new List<PNodeS>();
 
 		// Loop
 		while (OpenSet.Count > 0) {
 			PNodeS currentNode = OpenSet[0];
-
-			// If currentNode == endNode => Path Found
-			if (currentNode == endNode) {
-				//Debug.Log("Path found");
-				return TracebackPath(endNode, startNode);
-			}
 
 			// Find the node in the OpenSet with the lowest fCost
 			for (int i = 1; i < OpenSet.Count; i++) {
@@ -65,56 +55,64 @@ public static class PathfindingS {
 				}
 			}
 
+			// Path Found <= If currentNode == endNode 
+			if (currentNode == endNode) {
+				//Debug.Log("Path found");
+				return TracebackPath(currentNode, startNode);
+			}
+
 			// Move the current node from the OpenSet => ClosedSet
-			ClosedSet.Add(currentNode);
+			currentNode.closed = true;
 			OpenSet.Remove(currentNode);
 
 			// Cycle through all the neighbours
-			foreach (PNodeS neighbour in GetNeighbours(currentNode.position, nodes, pathingData.MapSize, walkableMap)) {
-				// If a neighbour is Un-Walkable / Un-Pathable or its on the ClosedSet => skip
-				if (!walkableMap[neighbour.position.x, neighbour.position.y]) continue;
-				if (ClosedSet.Contains(neighbour)) continue;
+			foreach (PNodeS neighbour in GetNeighbours(currentNode.position, nodes, pathingData.MapSize, pathableMap)) {
+				if (neighbour.closed) continue; // Already checked
 
-				// Calculate new gCost
-				int newCost = currentNode.gCost + pathCosts[neighbour.position.x, neighbour.position.y];
+				int totalGCost =
+					  currentNode.gCost + GetDistance(currentNode, neighbour)
+					+ pathCosts[neighbour.position.x, neighbour.position.y]; // Weights
 
-				if (newCost < neighbour.gCost) {
+				if (totalGCost < neighbour.gCost) {
 					neighbour.breadcrumbs = currentNode;
-					neighbour.gCost = newCost;
+					neighbour.gCost = totalGCost;
 					neighbour.hCost = GetDistance(currentNode, endNode);
 
 					if (!OpenSet.Contains(neighbour)) OpenSet.Add(neighbour);
 				}
 			}
 		}
-
 		//Debug.Log("Unable to find a path");
 		return null; // In case a path could not be found
 	}
 
 	private static List<Vector2Int> TracebackPath(PNodeS endNode, PNodeS startNode) {
 		PNodeS currentNode = endNode;
-		List<Vector2Int> path = new List<Vector2Int> { endNode.position };
+		List<Vector2Int> path = new List<Vector2Int> { currentNode.position };
 
-		while (currentNode != startNode) {
+		while (currentNode.breadcrumbs != null) {
 			currentNode = currentNode.breadcrumbs;
 			path.Add(currentNode.position);
-		}		
+		}
 		path.Reverse(); // Reverse the path, as currently it starts at the end
 		return path;
 	}
 
-	private static int GetDistance(PNodeS a, PNodeS b, int movementCost = 14, int diagonalMovementCost = 10) {
+	private static int GetDistance(PNodeS a, PNodeS b, int movementCost = 7, int diagonalMovementCost = 10) {
 		int dX = Mathf.Abs(b.position.x - a.position.x);
 		int dY = Mathf.Abs(b.position.y - a.position.y);
 
-		if (dX > dY) return (movementCost * (dX - dY) + diagonalMovementCost * dY);
-					 return (movementCost * (dY - dX) + diagonalMovementCost * dX);
+		return movementCost * (dX + dY) + (diagonalMovementCost - 2 * movementCost) * Mathf.Min(dX, dY);
+	} // Manhattan distance adapted to diagonals
+	private static int GetDistanceA(PNodeS a, PNodeS b, int movementCost = 10) {
+		int dX = Mathf.Abs(b.position.x - a.position.x);
+		int dY = Mathf.Abs(b.position.y - a.position.y);
+
+		return movementCost * (dX + dY);
 	} // Manhattan distance
 
-	private static List<PNodeS> GetNeighbours(Vector2Int nodePos, PNodeS[,] nodes, Vector2Int mapSize, bool[,] walkable) {
+	private static List<PNodeS> GetNeighbours(Vector2Int nodePos, PNodeS[,] nodes, Vector2Int mapSize, bool[,] pathable) {
 		//Debug.Log($"Node: [{nodePos.x},{nodePos.y}]");
-
 		List<PNodeS> neighbours = new List<PNodeS>();
 		for (int x = -1; x < 2; x++) {
 			for (int y = -1; y < 2; y++) {
@@ -125,7 +123,7 @@ public static class PathfindingS {
 				if ((nodePos.y + y) < 0 || (nodePos.y + y) >= mapSize.y) continue; // Check Y axis
 
 				// Skip non walkable nodes
-				if (!walkable[nodePos.x + x, nodePos.y + y]) continue;
+				if (!pathable[nodePos.x + x, nodePos.y + y]) continue;
 
 				// Add the Neighbour to the list
 				//Debug.Log($"Neighbour: [{nodePos.x + x},{nodePos.y + y}]");
@@ -133,5 +131,26 @@ public static class PathfindingS {
 			}
 		}
 		return neighbours;
-	}
+	} // Surrounding neighbours
+	private static List<PNodeS> GetNeighboursA(Vector2Int nodePos, PNodeS[,] nodes, Vector2Int mapSize, bool[,] pathable) {
+		List<PNodeS> neighbours = new List<PNodeS>();
+
+		for (int x = -1; x < 2; x++) {
+			if (x == 0) continue; // Skip (0,Y), it's this node
+			// Check for [outside of bounds] positions
+			if ((nodePos.x + x) < 0 || (nodePos.x + x) >= mapSize.x) continue;
+
+			neighbours.Add(nodes[nodePos.x + x, nodePos.y]);
+		}
+		for (int y = -1; y < 2; y++) {
+			if (y == 0) continue; // Skip (X,0), it's this node
+			// Check for [outside of bounds] positions
+			if ((nodePos.y + y) < 0 || (nodePos.y + y) >= mapSize.y) continue;
+
+			// Add the Neighbour to the list
+			neighbours.Add(nodes[nodePos.x, nodePos.y + y]);
+		}
+
+		return neighbours;
+	} // Adjacent neighbours
 }
