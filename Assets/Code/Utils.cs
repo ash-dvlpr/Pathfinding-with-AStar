@@ -8,7 +8,7 @@ public static class Utils {
 	#region Vector2 Utils
 	// "Snaps" positions to Grid Positions & Back
 	public static Vector2Int WorldToGridPos(Vector2 rawPos, Vector2Int mapSize) =>
-		new Vector2Int(Mathf.FloorToInt(rawPos.x) + mapSize.x / 2, Mathf.FloorToInt(rawPos.y) + mapSize.y / 2);
+		new Vector2Int(Mathf.FloorToInt(rawPos.x + mapSize.x / 2), Mathf.FloorToInt(rawPos.y + mapSize.y / 2));
 	public static Vector2 GridToWorldPos(Vector2 gridPos, Vector2Int mapSize) =>
 		new Vector2(gridPos.x - mapSize.x / 2, gridPos.y - mapSize.y / 2);
 
@@ -16,11 +16,10 @@ public static class Utils {
 	public static Vector2Int DisplaceGridPosInsideBounds(Vector2Int pos, Vector2Int mapSize) =>
 		new Vector2Int(Mathf.Clamp(pos.x, 0, mapSize.x - 1), Mathf.Clamp(pos.y, 0, mapSize.y - 1));
 	public static Vector2 DisplaceWorldPosInsideBounds(Vector2 pos, Vector2Int mapSize) =>
-		new Vector2(Mathf.Clamp(pos.x, -mapSize.x / 2, mapSize.x / 2), Mathf.Clamp(pos.y, -mapSize.y / 2, mapSize.y / 2));
+		new Vector2(Mathf.Clamp(pos.x, -mapSize.x / 2, (mapSize.x / 2) - 1), Mathf.Clamp(pos.y, -mapSize.y / 2, (mapSize.y / 2) - 1));
 
 	// Vector2 to Vector2Int
-	public static Vector2Int V2toV2Int(Vector2 pos) =>
-		new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y));
+	public static Vector2Int V2toV2Int(Vector2 pos) => new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y));
 	#endregion
 	#region GameObject Utils
 	public static GameObject CreateGO(string name) {
