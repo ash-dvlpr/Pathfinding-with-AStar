@@ -123,7 +123,10 @@ public class InputManager : MonoBehaviour {
 			Utils.WorldToGridPos(pathing_StartNode.transform.position, MapManager.mapSize),
 			Utils.WorldToGridPos(pathing_EndNode.transform.position, MapManager.mapSize));
 
-		if (path == null) return;
+		if (path == null) {
+			Debug.LogWarning("Path could not be found");
+			return;
+		}
 
 		// Create the Renderer if not already done
 		if (pathing_PathRenderer == null) {
