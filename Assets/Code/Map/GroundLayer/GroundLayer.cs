@@ -46,6 +46,9 @@ public class GroundLayer {
 
         // Change the corresponding tile's type
         groundTiles[position.x, position.y].SetType(newType);
+
+        // Update the Pathing Data
+        parentMap.PathDataLayer.UpdateData();
     }
     public void EmptyLayer() {
         // Iterate through all tiles
