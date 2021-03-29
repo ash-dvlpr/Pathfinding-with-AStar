@@ -496,7 +496,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d277aaa3f15cce14e9aefbfcceb169d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSize: {x: 100, y: 100}
+  mapSize: {x: 200, y: 200}
   defaultSeed: 123456789
 --- !u!1 &412718090
 GameObject:
