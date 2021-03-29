@@ -110,6 +110,7 @@ public static class Utils {
 		for (int i = 0; i < vertices.Count; i++) {                                      // Set all vertices 
 			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)vertices[i] + new Vector3(+0.5f, +0.5f, -20));
 		}
+		renderer.GetComponent<LineRenderer>().Simplify(0.1f);							// Simplifies the number of vertices
 		return renderer;
 	} // Creates a [child] Line with (list) vertices
 	public static GameObject CreateGridPosPathRenderer(string name, GameObject parent, List<Vector2Int> vertices, Vector2Int mapSize) {
@@ -120,6 +121,7 @@ public static class Utils {
 			Vector2 verticePos = Utils.GridToWorldPos(vertices[i], mapSize);			// Fix positions from GridPos to WorldPos
 			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)verticePos + new Vector3(+0.5f, +0.5f, -20));
 		}
+		renderer.GetComponent<LineRenderer>().Simplify(0.1f);							// Simplifies the number of vertices
 		return renderer;
 	} // Creates a [child] Line with (list) vertices
 
@@ -129,6 +131,7 @@ public static class Utils {
 		for (int i = 0; i < newVertices.Count; i++) {									// Set all vertices 
 			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)newVertices[i] + new Vector3(+0.5f, +0.5f, -20));
 		}
+		renderer.GetComponent<LineRenderer>().Simplify(0.1f);							// Simplifies the number of vertices
 	}
 	public static void UpdateGridPosPathRenderer(ref GameObject renderer, List<Vector2Int> newVertices, Vector2Int mapSize) {
 		renderer.GetComponent<LineRenderer>().positionCount = newVertices.Count;		// Set number of vertices
@@ -136,6 +139,7 @@ public static class Utils {
 			Vector2 verticePos = Utils.GridToWorldPos(newVertices[i], mapSize);			// Fix positions from GridPos to WorldPos
 			renderer.GetComponent<LineRenderer>().SetPosition(i, (Vector3)verticePos  + new Vector3(+0.5f, +0.5f, -20));
 		}
+		renderer.GetComponent<LineRenderer>().Simplify(0.1f);							// Simplifies the number of vertices
 	}
 
 	public static void DebugLog_Path(List<Vector2Int> path) {
