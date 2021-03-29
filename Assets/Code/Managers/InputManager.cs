@@ -41,7 +41,7 @@ public class InputManager : MonoBehaviour {
 	[Header("Pathfinding")]
 	public GameObject pathing_StartNode;
 	public GameObject pathing_EndNode;
-	private GameObject pathing_PathRenderer;
+	public GameObject pathing_PathRenderer;
 
 	[Header("Other")]
 	private ToolMode currentMode = ToolMode.Pathfinding; // Default mode is the Pathfinding Mode
@@ -74,23 +74,13 @@ public class InputManager : MonoBehaviour {
 	private void ToggleUI(bool newState) { uiCanvas.SetActive(newState); }
 	private void TogglePlacePreview() { ToolPreview_PlaceTooltip.SetActive(!ToolPreview_PlaceTooltip.activeSelf); }
 	private void TogglePlacePreview(bool newState) { ToolPreview_PlaceTooltip.SetActive(newState); }
-	private void TogglePathfinding() {
-		pathing_StartNode.SetActive(!pathing_StartNode.activeSelf);
-		pathing_EndNode.SetActive(!pathing_EndNode.activeSelf);
-	}
-	private void TogglePathfinding(bool newState) {
-		pathing_StartNode.SetActive(newState);
-		pathing_EndNode.SetActive(newState);
-	}
 	private void ChangeMode(bool refresh = false) {
 		switch (currentMode) { // A basic state machine, just switch to the next tool & change the tooltip
 			case ToolMode.Pathfinding:
 				if (refresh) {
 					ToolPreview_ToolName.GetComponent<Text>().text = "Pathfinding";
-					TogglePathfinding(true);
 					TogglePlacePreview(false);
 				} else {
-					TogglePathfinding(false);
 					TogglePlacePreview(true);
 					ToolPreview_ToolName.GetComponent<Text>().text = "Terrain";
 					currentMode = ToolMode.Terrain;
@@ -108,7 +98,6 @@ public class InputManager : MonoBehaviour {
 				if (refresh) {
 					ToolPreview_ToolName.GetComponent<Text>().text = "Objects";
 				} else {
-					TogglePathfinding(true);
 					TogglePlacePreview(false);
 					ToolPreview_ToolName.GetComponent<Text>().text = "Pathfinding";
 					currentMode = ToolMode.Pathfinding;
