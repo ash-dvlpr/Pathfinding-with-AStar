@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PNode {
+public class PNode : IHeapItem<PNode> {
 #nullable enable
 
 	//? Data
 	public readonly Vector2Int position;
 	public PNode? breadcrumbs;
+    private int heapIndex;
     public bool closed;
 
 	public int gCost;
@@ -24,8 +25,12 @@ public class PNode {
 		this.hCost = hCost;
     }
 
-	//? Methods
-
+	//? Interface Implementation
+    public int HeapIndex { get => heapIndex; set => heapIndex = value; }
+    public int CompareTo(PNode other) {
+        int comp = fCost.CompareTo(other.fCost);
+        return (comp == 0) ? hCost.CompareTo(other.hCost) : -comp;
+    }
 
 	//? Operator overloading
 	// For quicker comparison
